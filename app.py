@@ -107,8 +107,9 @@ def render_photo(rank_num, emoji):
 
 # ── ADMIN SIDEBAR ──────────────────────────────────────────────────
 with st.sidebar:
-    st.markdown("## 🔐 Panel Admin")
-    st.markdown("---")
+    st.markdown('<p style="font-size:0.85rem;opacity:0.7;margin-bottom:0.5rem;">🔐 Panel Admin</p>', unsafe_allow_html=True)
+st.markdown("---")
+
     if not st.session_state.admin_ok:
         pwd = st.text_input("Password Admin", type="password", placeholder="Ketik password...")
         if st.button("Masuk", use_container_width=True):
@@ -146,6 +147,24 @@ with st.sidebar:
 
         st.markdown("**4. Periode**")
         periode_input = st.text_input("Periode", value=st.session_state.periode, label_visibility="collapsed")
+st.markdown("---")
+st.markdown("**5. Berita / Informasi Fakultas**")
+news_input = st.text_area(
+    "Teks berita (boleh pakai Markdown sederhana)",
+    value=st.session_state.get("news_text", ""),
+    label_visibility="collapsed",
+    height=150,
+)
+
+# Di tombol Simpan Pengaturan (tempat Anda sudah set yt_id dan periode), tambahkan:
+if st.button("Simpan Pengaturan", use_container_width=True, type="primary"):
+    if yt_input:
+        st.session_state.yt_id = extract_yt_id(yt_input)
+    if periode_input:
+        st.session_state.periode = periode_input
+    st.session_state.news_text = news_input
+    st.success("Tersimpan!")
+    st.balloons()
 
         st.markdown("---")
         if st.button("Simpan Pengaturan", use_container_width=True, type="primary"):
@@ -225,9 +244,21 @@ else:
 # ── VIDEO ─────────────────────────────────────────────────────────
 yt = st.session_state.yt_id
 embed_url = f"https://www.youtube.com/embed/{yt}?autoplay=1&mute=1&loop=1&playlist={yt}&controls=1&rel=0"
-st.markdown('<div class="video-wrap"><div class="video-label">Selamat & Semangat untuk Seluruh Civitas FIPP UNNES</div>', unsafe_allow_html=True)
-st.components.v1.iframe(embed_url, height=380, scrolling=False)
-st.markdown('</div>', unsafe_allow_html=True)
+
+col_video, col_news = st.columns([3, 2], gap="large")
+
+with col_video:
+    st.markdown('<div class="video-wrap"><div class="video-label">Profil Fakultas Ilmu Pendidikan dan Psikologi UNNES</div>', unsafe_allow_html=True)
+    st.components.v1.iframe(embed_url, height=360, scrolling=False)
+    st.markdown('</div>', unsafe_allow_html=True)
+
+with col_news:
+    st.markdown('<div class="video-wrap">', unsafe_allow_html=True)
+    st.markdown("### 📰 Informasi & Berita Fakultas")
+    if "news_text" not in st.session_state:
+        st.session_state.news_text = "Belum ada berita terbaru. Silakan update melalui Panel Admin."
+    st.markdown(st.session_state.news_text, unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
 
 # ── STATISTIK ─────────────────────────────────────────────────────
 if st.session_state.all_df is not None:
