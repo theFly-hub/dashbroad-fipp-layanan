@@ -102,7 +102,7 @@ def process_excel(file):
 def render_photo(rank_num, emoji):
     if rank_num in st.session_state.photos and st.session_state.photos[rank_num]:
         b64 = base64.b64encode(st.session_state.photos[rank_num]).decode()
-        return f'<img src="data:image/jpeg;base64,{b64}" class="photo-circle"/>\'
+        return f'<img src="data:image/jpeg;base64,{b64}" class="photo-circle"/>'
     return f'<div class="photo-placeholder">{emoji}</div>'
 
 # ── ADMIN SIDEBAR ──────────────────────────────────────────────────
